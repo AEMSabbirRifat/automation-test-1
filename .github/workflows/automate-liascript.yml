@@ -1,0 +1,30 @@
+name: Liascript Automation
+
+on:
+  workflow_dispatch: # This enables the "action button" trigger
+
+jobs:
+  run_liascript_automation:
+    runs-on: ubuntu-latest # Or windows-latest, macos-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4 # This action checks out your code
+
+    - name: List files (for debugging/verification)
+      run: |
+        echo "Contents of the repository:"
+        ls -R
+
+    - name: Your Liascript Automation Task
+      run: |
+        # Replace this with your actual automation commands
+        # For example, if you want to validate a Liascript file,
+        # you might use a tool like Node.js with a Liascript parser/validator.
+        echo "Starting automation for week02_.md..."
+        echo "This is where your specific automation commands will go."
+        # Example: If you had a Python script named 'validate_liascript.py'
+        # python validate_liascript.py week02_.md
+        # Example: If you wanted to convert it to HTML using a hypothetical tool:
+        # liascript-converter convert week02_.md --output week02.html
+        echo "Liascript automation completed."
