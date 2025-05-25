@@ -6,61 +6,45 @@ on:
       version:
         description: 'Release version (e.g., v1.0.0)'
         required: true
-        default: 'v1.0.0' # A sensible default
+        default: 'v1.0.0'
 
 jobs:
   run_liascript_automation:
     runs-on: ubuntu-latest
-
-    # Permissions are crucial for creating releases
     permissions:
-      contents: write # This grants permission to create and update releases
+      contents: write
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Set up Node.js (Example for Liascript CLI)
-      uses: actions/setup-node@v4 # Use this if your generation tool is Node.js-based
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
       with:
         node-version: '18' # Or your preferred Node.js version
 
-    - name: Install Liascript CLI (Example)
-      run: npm install -g liascript # Replace with your actual tool installation
+    - name: Install Node.js dependencies
+      run: npm install
 
-    - name: Generate Liascript Output Files
-      id: generate_files # Give this step an ID to reference its outputs later
-      run: |
-        # --- IMPORTANT: REPLACE THESE COMMANDS WITH YOUR ACTUAL GENERATION LOGIC ---
-        # This is where you run the commands to produce your PDF, SCORM, IMS files.
-        # Ensure these commands output the files into a known directory, e.g., 'dist/'.
+    - name: Generate Liascript PDF
+      run: npm run generate-pdf # This runs your script/generate-pdf.js
 
-        echo "Generating Liascript outputs..."
-        mkdir -p dist # Create an output directory if it doesn't exist
-
-        # EXAMPLE: Hypothetical commands to generate files
-        # Replace 'liascript generate' with the actual command for your tool.
-        # These commands should output to the 'dist/' folder.
-        liascript generate week02_.md --format=pdf --output=dist/week02_lesson.pdf
-        liascript generate week02_.md --format=scorm --output=dist/week02_course.zip # SCORM packages are often zip files
-        liascript generate week02_.md --format=ims --output=dist/week02_ims.zip   # IMS packages are often zip files
-
-        echo "Generated files:"
-        ls -l dist/
-
-        # You might also want to set an output from this step, e.g., the path to the generated files
-        echo "::set-output name=release_files::dist/*"
-        # --- END OF IMPORTANT SECTION ---
+    # For SCORM/IMS:
+    # If Liascript provides a way to export to SCORM/IMS via a specific JavaScript function
+    # or by wrapping your Liascript in a SCORM/IMS compatible template, you might need
+    # to extend the Puppeteer script or use other tools here.
+    # This is highly dependent on how you normally create SCORM/IMS packages from Liascript.
+    # Often, SCORM/IMS generation involves packaging web content into a specific ZIP structure.
 
     - name: Create GitHub Release
-      uses: softprops/action-gh-release@v2 # Use the release action
-      if: ${{ success() }} # Only create a release if the generation step succeeded
+      uses: softprops/action-gh-release@v2
+      if: ${{ success() }}
       with:
-        tag_name: ${{ inputs.version }} # Use the version from the workflow_dispatch input
+        tag_name: ${{ inputs.version }}
         name: Liascript Release - ${{ inputs.version }}
         body: |
           Automated release of Liascript content for version ${{ inputs.version }}.
-          Includes generated PDF, SCORM, and IMS packages from `week02_.md`.
-        draft: false # Set to true if you want to review before publishing
-        prerelease: false # Set to true if it's a pre-release
-        files: dist/* # This uploads all files from the 'dist' directory as assets
+          Includes generated PDF and other packages.
+        draft: false
+        prerelease: false
+        files: dist/* # Ensure your generation script places files here
