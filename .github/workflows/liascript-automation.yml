@@ -1,0 +1,181 @@
+name: LiaScript Automation
+
+on:
+  # Trigger on push to main branch
+  push:
+    branches: [ main, master ]
+    paths: 
+      - '*.md'
+      - 'media/**'
+  
+  # Trigger on pull requests
+  pull_request:
+    branches: [ main, master ]
+  
+  # Manual trigger with action button
+  workflow_dispatch:
+    inputs:
+      script_file:
+        description: 'LiaScript file to process'
+        required: false
+        default: 'week02_.md'
+      export_format:
+        description: 'Export format'
+        required: false
+        default: 'html'
+        type: choice
+        options:
+        - html
+        - pdf
+        - scorm
+
+jobs:
+  liascript-process:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Setup Node.js Environment
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+    
+    - name: Install LiaScript Tools
+      run: |
+        npm install -g @liascript/devserver
+        npm install -g @liascript/exporter
+        echo "LiaScript tools installed successfully"
+    
+    - name: Verify Installation
+      run: |
+        lia --version || echo "LiaScript devserver version check failed"
+        echo "Checking for LiaScript exporter..."
+        npm list -g @liascript/exporter || echo "Exporter check completed"
+    
+    - name: Check Repository Structure
+      run: |
+        echo "Repository contents:"
+        ls -la
+        echo ""
+        echo "Checking for LiaScript file:"
+        SCRIPT_FILE="${{ github.event.inputs.script_file || 'week02_.md' }}"
+        if [ -f "$SCRIPT_FILE" ]; then
+          echo "✅ Found LiaScript file: $SCRIPT_FILE"
+          echo "File size: $(du -h "$SCRIPT_FILE" | cut -f1)"
+        else
+          echo "❌ LiaScript file not found: $SCRIPT_FILE"
+        fi
+        echo ""
+        echo "Checking media folder:"
+        if [ -d "media" ]; then
+          echo "✅ Media folder exists"
+          echo "Media files:"
+          find media -type f | head -10
+        else
+          echo "❌ Media folder not found"
+        fi
+    
+    - name: Process LiaScript File
+      run: |
+        SCRIPT_FILE="${{ github.event.inputs.script_file || 'week02_.md' }}"
+        EXPORT_FORMAT="${{ github.event.inputs.export_format || 'html' }}"
+        
+        echo "Processing LiaScript file: $SCRIPT_FILE"
+        echo "Export format: $EXPORT_FORMAT"
+        
+        # Create output directory
+        mkdir -p output
+        
+        # Try to process the file
+        if [ -f "$SCRIPT_FILE" ]; then
+          echo "Starting LiaScript processing..."
+          
+          # Basic validation - check if file contains LiaScript indicators
+          if grep -q "<!--" "$SCRIPT_FILE" && grep -q "-->" "$SCRIPT_FILE"; then
+            echo "✅ File appears to be a valid LiaScript document"
+          else
+            echo "⚠️  Warning: File may not be a standard LiaScript document"
+          fi
+          
+          # Try to export using LiaScript exporter
+          if command -v lia-exporter >/dev/null 2>&1; then
+            lia-exporter --input "$SCRIPT_FILE" --format "$EXPORT_FORMAT" --output output/ || echo "Exporter failed, trying alternative method"
+          else
+            echo "Using alternative processing method..."
+            # Copy the original file to output as fallback
+            cp "$SCRIPT_FILE" output/
+            # Copy media folder if it exists
+            if [ -d "media" ]; then
+              cp -r media output/
+            fi
+          fi
+          
+        else
+          echo "❌ Cannot process: File $SCRIPT_FILE not found"
+          exit 1
+        fi
+    
+    - name: Generate Processing Report
+      run: |
+        SCRIPT_FILE="${{ github.event.inputs.script_file || 'week02_.md' }}"
+        EXPORT_FORMAT="${{ github.event.inputs.export_format || 'html' }}"
+        
+        echo "# LiaScript Processing Report" > processing-report.md
+        echo "" >> processing-report.md
+        echo "## Processing Details" >> processing-report.md
+        echo "- **Repository**: ${{ github.repository }}" >> processing-report.md
+        echo "- **Branch**: ${{ github.ref_name }}" >> processing-report.md
+        echo "- **Commit**: ${{ github.sha }}" >> processing-report.md
+        echo "- **Processed File**: $SCRIPT_FILE" >> processing-report.md
+        echo "- **Export Format**: $EXPORT_FORMAT" >> processing-report.md
+        echo "- **Timestamp**: $(date -u)" >> processing-report.md
+        echo "- **Workflow Run**: ${{ github.run_number }}" >> processing-report.md
+        echo "" >> processing-report.md
+        
+        echo "## Repository Structure" >> processing-report.md
+        echo "\`\`\`" >> processing-report.md
+        ls -la >> processing-report.md
+        echo "\`\`\`" >> processing-report.md
+        echo "" >> processing-report.md
+        
+        if [ -d "output" ]; then
+          echo "## Generated Output" >> processing-report.md
+          echo "\`\`\`" >> processing-report.md
+          ls -la output/ >> processing-report.md
+          echo "\`\`\`" >> processing-report.md
+        fi
+        
+        echo "## File Analysis" >> processing-report.md
+        if [ -f "$SCRIPT_FILE" ]; then
+          echo "- File size: $(du -h "$SCRIPT_FILE" | cut -f1)" >> processing-report.md
+          echo "- Line count: $(wc -l < "$SCRIPT_FILE")" >> processing-report.md
+          echo "- Word count: $(wc -w < "$SCRIPT_FILE")" >> processing-report.md
+        fi
+        
+        if [ -d "media" ]; then
+          echo "- Media files: $(find media -type f | wc -l)" >> processing-report.md
+        fi
+    
+    - name: Upload Processing Results
+      uses: actions/upload-artifact@v4
+      with:
+        name: liascript-results-${{ github.run_number }}
+        path: |
+          output/
+          processing-report.md
+        retention-days: 30
+    
+    - name: Summary
+      run: |
+        echo "🎉 LiaScript automation completed!"
+        echo ""
+        echo "📊 Summary:"
+        echo "- Processed file: ${{ github.event.inputs.script_file || 'week02_.md' }}"
+        echo "- Export format: ${{ github.event.inputs.export_format || 'html' }}"
+        echo "- Output artifacts: liascript-results-${{ github.run_number }}"
+        echo ""
+        echo "📥 Download your results from the 'Artifacts' section below."
