@@ -1,30 +1,66 @@
 name: Liascript Automation
 
 on:
-  workflow_dispatch: # This enables the "action button" trigger
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., v1.0.0)'
+        required: true
+        default: 'v1.0.0' # A sensible default
 
 jobs:
   run_liascript_automation:
-    runs-on: ubuntu-latest # Or windows-latest, macos-latest
+    runs-on: ubuntu-latest
+
+    # Permissions are crucial for creating releases
+    permissions:
+      contents: write # This grants permission to create and update releases
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4 # This action checks out your code
+      uses: actions/checkout@v4
 
-    - name: List files (for debugging/verification)
-      run: |
-        echo "Contents of the repository:"
-        ls -R
+    - name: Set up Node.js (Example for Liascript CLI)
+      uses: actions/setup-node@v4 # Use this if your generation tool is Node.js-based
+      with:
+        node-version: '18' # Or your preferred Node.js version
 
-    - name: Your Liascript Automation Task
+    - name: Install Liascript CLI (Example)
+      run: npm install -g liascript # Replace with your actual tool installation
+
+    - name: Generate Liascript Output Files
+      id: generate_files # Give this step an ID to reference its outputs later
       run: |
-        # Replace this with your actual automation commands
-        # For example, if you want to validate a Liascript file,
-        # you might use a tool like Node.js with a Liascript parser/validator.
-        echo "Starting automation for week02_.md..."
-        echo "This is where your specific automation commands will go."
-        # Example: If you had a Python script named 'validate_liascript.py'
-        # python validate_liascript.py week02_.md
-        # Example: If you wanted to convert it to HTML using a hypothetical tool:
-        # liascript-converter convert week02_.md --output week02.html
-        echo "Liascript automation completed."
+        # --- IMPORTANT: REPLACE THESE COMMANDS WITH YOUR ACTUAL GENERATION LOGIC ---
+        # This is where you run the commands to produce your PDF, SCORM, IMS files.
+        # Ensure these commands output the files into a known directory, e.g., 'dist/'.
+
+        echo "Generating Liascript outputs..."
+        mkdir -p dist # Create an output directory if it doesn't exist
+
+        # EXAMPLE: Hypothetical commands to generate files
+        # Replace 'liascript generate' with the actual command for your tool.
+        # These commands should output to the 'dist/' folder.
+        liascript generate week02_.md --format=pdf --output=dist/week02_lesson.pdf
+        liascript generate week02_.md --format=scorm --output=dist/week02_course.zip # SCORM packages are often zip files
+        liascript generate week02_.md --format=ims --output=dist/week02_ims.zip   # IMS packages are often zip files
+
+        echo "Generated files:"
+        ls -l dist/
+
+        # You might also want to set an output from this step, e.g., the path to the generated files
+        echo "::set-output name=release_files::dist/*"
+        # --- END OF IMPORTANT SECTION ---
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2 # Use the release action
+      if: ${{ success() }} # Only create a release if the generation step succeeded
+      with:
+        tag_name: ${{ inputs.version }} # Use the version from the workflow_dispatch input
+        name: Liascript Release - ${{ inputs.version }}
+        body: |
+          Automated release of Liascript content for version ${{ inputs.version }}.
+          Includes generated PDF, SCORM, and IMS packages from `week02_.md`.
+        draft: false # Set to true if you want to review before publishing
+        prerelease: false # Set to true if it's a pre-release
+        files: dist/* # This uploads all files from the 'dist' directory as assets
