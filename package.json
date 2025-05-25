@@ -1,0 +1,21 @@
+{
+  "name": "liascript-automation",
+  "version": "1.0.0",
+  "description": "Automated Liascript generation for PDF/SCORM/IMS",
+  "main": "index.js",
+  "scripts": {
+    "generate-pdf": "node scripts/generate-pdf.js"
+  },
+  "keywords": [
+    "liascript",
+    "automation",
+    "pdf",
+    "scorm",
+    "ims"
+  ],
+  "author": "Your Name/Organization",
+  "license": "MIT",
+  "dependencies": {
+    "puppeteer": "^22.0.0"
+  }
+}
