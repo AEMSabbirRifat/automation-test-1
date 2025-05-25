@@ -12,15 +12,17 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Create output directory
-      run: mkdir -p dist
-
-    - name: Convert LIA Script to HTML via Docker
+    - name: Download LIA Script CLI
       run: |
-        docker run --rm -v ${{ github.workspace }}:/slides liascript/dev \
-          -i /slides/week02_.md -o /slides/dist/index.html
+        curl -L -o liascript https://github.com/LiaScript/cli/releases/latest/download/lia
+        chmod +x liascript
 
-    - name: Copy media files
+    - name: Convert LIA Script to HTML
+      run: |
+        mkdir -p dist
+        ./liascript week02_.md -o dist/index.html
+
+    - name: Copy media folder
       run: cp -r media dist/
 
     - name: Deploy to GitHub Pages
