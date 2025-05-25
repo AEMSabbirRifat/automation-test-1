@@ -15,10 +15,9 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install LiaScript Tools
+      - name: Install LiaScript CLI
         run: |
-          npm install -g liascript
-          npm install -g @liascript/cli
+          npm install -g https://github.com/LiaScript/LiaScript.git
           
       - name: Render LiaScript File
         run: |
