@@ -23,7 +23,7 @@ jobs:
           lia render week02_.md --out ./output --media ./media
           
       - name: Upload Rendered Output
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4  # Updated from v3 to v4
         with:
           name: lia-output
           path: ./output
