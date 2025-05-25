@@ -1,0 +1,1 @@
+[![Liascript Automation](https://github.com/AEMSabbirRifat/automation-test-1/actions/workflows/automate-liascript.yml/badge.svg)](https://github.com/AEMSabbirRifat/automation-test-1/actions/workflows/automate-liascript.yml)
