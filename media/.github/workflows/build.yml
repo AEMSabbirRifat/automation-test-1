@@ -1,0 +1,46 @@
+name: LIA Script Transformation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install LIA Compiler
+      run: npm install -g @liascript/cli
+
+    - name: Transform LIA Script to HTML
+      run: lia week02_.md --output dist --html
+
+    - name: Copy media assets
+      run: cp -r media dist/media
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./dist
+
+            - name: Transform to PDF
+      run: lia week02_.md --pdf
+
+    - name: Transform to EPUB
+      run: lia week02_.md --epub
+
+          - name: Install Pandoc
+      run: sudo apt-get install -y pandoc
+
+
