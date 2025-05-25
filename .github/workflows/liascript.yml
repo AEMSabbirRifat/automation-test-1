@@ -12,20 +12,15 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
+    - name: Create output directory
+      run: mkdir -p dist
 
-    - name: Install LIA-Script CLI
-      run: npm install -g liascript
-
-    - name: Convert LIA Script to HTML
+    - name: Convert LIA Script to HTML via Docker
       run: |
-        mkdir -p dist
-        liascript week02_.md -o dist/index.html
+        docker run --rm -v ${{ github.workspace }}:/slides liascript/cli \
+          -i /slides/week02_.md -o /slides/dist/index.html
 
-    - name: Copy media folder
+    - name: Copy media files
       run: cp -r media dist/
 
     - name: Deploy to GitHub Pages
