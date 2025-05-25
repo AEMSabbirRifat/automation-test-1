@@ -1,7 +1,7 @@
 name: LiaScript Automation
 
 on:
-  workflow_dispatch:  # Allows manual triggering via GitHub's "Actions" tab
+  workflow_dispatch:  # Allows manual triggering
 
 jobs:
   render-liascript:
@@ -10,24 +10,37 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y curl git npm
+          sudo apt-get install -y build-essential python3
 
-      - name: Install LiaScript
+      - name: Install LiaScript (correct method)
         run: |
-          npm install -g https://github.com/LiaScript/LiaScript.git
-          echo "Installed LiaScript version:"
-          lia --version
-          echo "PATH: $PATH"
-          echo "Global npm packages:"
-          npm list -g --depth=0
+          # Clone and install from source
+          git clone https://github.com/LiaScript/LiaScript.git
+          cd LiaScript
+          npm install
+          npm run build
+          npm link
+          cd ..
+          
+          # Verify installation
+          echo "Node path: $(which node)"
+          echo "NPM path: $(which npm)"
+          echo "Lia path: $(which lia)"
 
       - name: Render LiaScript File
         run: |
-          npx lia render week02_.md --out ./output --media ./media
-          
+          lia render week02_.md --out ./output --media ./media
+          ls -la ./output  # Verify output files
+
       - name: Upload Rendered Output
         uses: actions/upload-artifact@v4
         with:
