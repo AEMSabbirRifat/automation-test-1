@@ -10,18 +10,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl git npm
 
-      - name: Install LiaScript CLI
+      - name: Install LiaScript
         run: |
           npm install -g https://github.com/LiaScript/LiaScript.git
-          
+          echo "Installed LiaScript version:"
+          lia --version
+          echo "PATH: $PATH"
+          echo "Global npm packages:"
+          npm list -g --depth=0
+
       - name: Render LiaScript File
         run: |
-          lia render week02_.md --out ./output --media ./media
+          npx lia render week02_.md --out ./output --media ./media
           
       - name: Upload Rendered Output
         uses: actions/upload-artifact@v4
