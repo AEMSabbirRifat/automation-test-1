@@ -17,7 +17,7 @@ jobs:
 
     - name: Convert LIA Script to HTML via Docker
       run: |
-        docker run --rm -v ${{ github.workspace }}:/slides liascript/cli \
+        docker run --rm -v ${{ github.workspace }}:/slides liascript/dev \
           -i /slides/week02_.md -o /slides/dist/index.html
 
     - name: Copy media files
