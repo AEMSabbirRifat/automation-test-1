@@ -1,53 +1,30 @@
-name: Convert LiaScript to HTML (Docker)
+name: Build and Deploy LIA Script
 
 on:
   push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
+    branches: [main]
 
 jobs:
-  convert-liascript:
+  build:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
-      
-    - name: Build custom LiaScript Docker image
+      uses: actions/checkout@v3
+
+    - name: Create output directory
+      run: mkdir -p dist
+
+    - name: Convert LIA Script to HTML via Docker
       run: |
-        cat > Dockerfile << 'EOF'
-        FROM node:18-alpine
-        
-        # Install LiaScript CLI globally
-        RUN npm install -g @liascript/cli
-        
-        # Create working directory
-        WORKDIR /workspace
-        
-        # Set entrypoint
-        ENTRYPOINT ["liascript"]
-        EOF
-        
-        docker build -t local-liascript .
-        
-    - name: Convert LiaScript files
-      run: |
-        # Convert all markdown files
-        for file in *.md; do
-          if [ -f "$file" ]; then
-            echo "Converting $file..."
-            docker run --rm -v $(pwd):/workspace local-liascript "$file"
-          fi
-        done
-        
-    - name: List output files
-      run: |
-        echo "Generated files:"
-        ls -la *.html 2>/dev/null || echo "No HTML files generated"
-        
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v4
+        docker run --rm -v ${{ github.workspace }}:/slides liascript/dev \
+          -i /slides/week02_.md -o /slides/dist/index.html
+
+    - name: Copy media files
+      run: cp -r media dist/
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
       with:
-        name: liascript-output
-        path: '*.html'
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./dist
