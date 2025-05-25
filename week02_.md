@@ -1,6 +1,6 @@
 <!--
 author:  Sabbir
-email:   a.rifat@st.ovgu.de
+email:   a.e.m.sabbirrifat@gmail.com
 version: 1.0.0
 language: en
 narrator: US English Female
@@ -21,11 +21,8 @@ comment:  Quantitative Research Questions, Literature Review & Hypothesis Formul
 # What is Research?
 {{0}}
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0px; align-items: center;">
-
-  <img src="https://raw.githubusercontent.com/OVGU-VET-TechEd/Quantitative_Methods_with_R/1556d39d94930903ccae4a5751c417b995ec5549/Media_week2/Think%20GIF%20by%20Cabrona%20Inc.gif" alt="Thinking GIF" style="width: 200px; height: auto; display: block; margin: auto;" />
-
-  <img src="https://raw.githubusercontent.com/OVGU-VET-TechEd/Quantitative_Methods_with_R/1556d39d94930903ccae4a5751c417b995ec5549/Media_week2/Confused%20Stephen%20Colbert.gif" alt="Confused Reaction" style="width: 200px; height: 225px; display: block; margin: auto;" />
-
+    <img src="https://raw.githubusercontent.com/AEMSabbirRifat/automation-test-1/b90d2625b084439a22cec06fdeb2244e5408c92c/media/Think%20GIF%20by%20Cabrona%20Inc.gif" alt="Thinking GIF" style="width: 200px; height: auto; display: block; margin: auto;" />
+    <img src="https://raw.githubusercontent.com/AEMSabbirRifat/automation-test-1/b90d2625b084439a22cec06fdeb2244e5408c92c/media/Confused%20Stephen%20Colbert.gif" alt="Confused Reaction" style="width: 200px; height: 225px; display: block; margin: auto;" />
 </div>
 
 
@@ -45,8 +42,8 @@ comment:  Quantitative Research Questions, Literature Review & Hypothesis Formul
 3. Mixed Method research
 
 {{2}}
-<div style="text-align: center;">   
-  <img src="https://raw.githubusercontent.com/OVGU-VET-TechEd/Quantitative_Methods_with_R/1556d39d94930903ccae4a5751c417b995ec5549/Media_week2/MMR5-768x622.jpg" alt="Mixed Methods Research" style="width: 60%; max-width: 400px;"> 
+<div style="text-align: center;">
+    <img src="https://raw.githubusercontent.com/AEMSabbirRifat/automation-test-1/b90d2625b084439a22cec06fdeb2244e5408c92c/media/MMR5-768x622.jpg" alt="Mixed Methods Research" style="width: 60%; max-width: 400px;">
 </div>
 
 
@@ -265,7 +262,7 @@ https://libguides.brown.edu/organize/litreview
 
 
 {{1}}
-According to Binoy (2019) & Supino (2012), Hypothesis formulation in quantitative research involves creating testable statements that predict relationships between variables, utilizing deductive reasoning. It serves as a guide for research direction, sample selection, and statistical analysis, ultimately facilitating the discussion of findings and conclusions. (Binoy, 2019) (Supino, 2012).
+According to Binoy (2019) & Supino (2012), Hypothesis formulation in quantitative research involves creating testable statements that predict relationships between variables, utilizing deductive reasoning. It serves as a guide for research direction, sample selection, and statistical analysis, ultimately facilitating the discussion of findings and conclusions. (Binoy, 2019) (Supino, 2012).
 
 {{2}}
 Aspects of Hypothesis Formulation 
@@ -292,8 +289,7 @@ Aspects of Hypothesis Formulation
 
 {{2}}
 
-<img src="https://raw.githubusercontent.com/OVGU-VET-TechEd/Quantitative_Methods_with_R/1556d39d94930903ccae4a5751c417b995ec5549/Media_week2/Screenshot%202025-03-02%20154700.png" alt="Screenshot" width="400">
-
+<img src="https://raw.githubusercontent.com/AEMSabbirRifat/automation-test-1/b90d2625b084439a22cec06fdeb2244e5408c92c/media/Screenshot%202025-03-02%20154700.png" alt="Screenshot" width="400">
 
 ## Types of Hypothesis (cont.)
 
@@ -379,4 +375,3 @@ This is an evaluation form to gather feedback on your self-study session. Please
 
 
 __**Thank you for completing this evaluation! For improving future self-study materials, your feedback is valuable to us.**__
-
