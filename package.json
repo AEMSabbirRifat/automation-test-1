@@ -1,21 +1,28 @@
 {
-  "name": "liascript-automation",
+  "name": "liascript-course-utils",
   "version": "1.0.0",
-  "description": "Automated Liascript generation for PDF/SCORM/IMS",
-  "main": "index.js",
+  "description": "Utilities for LiaScript course automation, including PDF generation and SCORM export.",
+  "main": "scripts/generate-pdf.js",
   "scripts": {
-    "generate-pdf": "node scripts/generate-pdf.js"
+    "generate-pdf": "node scripts/generate-pdf.js",
+    "export-scorm": "liascript-exporter Test\\ 01.md --format scorm --output liascript_course.zip"
+    // ^^^ This line is new or updated ^^^
+    // IMPORTANT: "liascript-exporter" is a hypothetical command.
+    // You MUST replace it with the actual command provided by the LiaScript Exporter.
+    // The path "Test\ 01.md" uses a backslash to escape the space, which is common in shell commands.
   },
   "keywords": [
     "liascript",
-    "automation",
-    "pdf",
     "scorm",
-    "ims"
+    "pdf",
+    "github-actions"
   ],
-  "author": "Your Name/Organization",
+  "author": "Your Name",
   "license": "MIT",
   "dependencies": {
-    "puppeteer": "^22.0.0"
+    "express": "^4.19.2",
+    "puppeteer": "^22.12.1",
+    // You might need to add the LiaScript exporter package here if it's an npm package
+    // For example: "liascript-exporter-package": "x.y.z"
   }
 }
